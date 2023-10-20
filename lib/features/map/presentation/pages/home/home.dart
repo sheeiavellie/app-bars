@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:bars/features/map/presentation/pages/home/map_screen.dart';
+import 'package:bars/features/map/presentation/pages/mapscreen/map_screen.dart';
 
 
 class Home extends StatefulWidget {

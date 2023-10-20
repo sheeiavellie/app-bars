@@ -3,7 +3,7 @@ import 'package:bars/features/map/presentation/bloc/bar/remote/remote_bar_bloc.d
 import 'package:bars/features/map/presentation/bloc/bar/remote/remote_bar_event.dart';
 import 'package:bars/internal/injection_container.dart';
 import 'package:flutter/material.dart';
-import 'package:bars/presentation/home.dart';
+import 'package:bars/features/map/presentation/pages/home/home.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Application extends StatelessWidget {

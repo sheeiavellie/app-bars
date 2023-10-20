@@ -21,8 +21,6 @@ class MapScreen extends StatelessWidget {
         'Workout places',
         style: TextStyle(
           color: Colors.black,
-          // fontFamily: 'Soledago',
-          // fontSize: 35,
         ),
       ),
     );

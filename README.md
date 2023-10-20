@@ -1,16 +1,34 @@
-# bars
+# Pullaptica
+--Cool logo somewhere here--
 
-A new Flutter project.
+An easy to use iOS/Android note-app for quick saving/accessing different locations (primarily workout places).
 
-## Getting Started
+## Problem summary... I guess?
 
-This project is a starting point for a Flutter application.
+The main idea is to have proper _simple_ tool fot _simple_ task. 
 
-A few resources to get you started if this is your first Flutter project:
+Imagine that very hidden outdoor pull up bar you found last day. You probably want to save it's location to tell your friends or just not to forget it by yourself. And the problem here is that there isn't any tool that perfectly fits for you. For example, Google Maps are just to complex for this kind of task, it's like using MS Word to make a grocery list. It's just unpleasant to use _complex_ stuff for very _simple_ tasks, so that's why notes app exists.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+With this project I want to make a solution for this kind of problem.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Features
+
+App MVP will feature:
+- Simple yet elegant UI
+- Map screen with all saved locations
+- Ability to add new locations
+- Ability to add comments for every location
+- User defined categories in which user will be able to save locations
+
+## Development
+
+Currently app is under development 🔨👷.
+
+## API
+
+App uses it's own API: [Bars API](https://github.com/sheeiavellie/api-bars/).
+
+## Why Flutter?
+
+Flutter was chosen because it's fancy, trendy, easy to use and get into technology which provides cross-platform app development.
+(I actually knew nothing about Flutter/React until I started this project).

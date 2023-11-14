@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 ThemeData theme() {
   return ThemeData(
     scaffoldBackgroundColor: Colors.white,
     fontFamily: 'Finlandica',
     appBarTheme: appBarTheme(),
-
+    useMaterial3: true,
   );
 }
 
@@ -15,7 +16,6 @@ AppBarTheme appBarTheme() {
     elevation: 0,
     centerTitle: true,
     iconTheme: IconThemeData(color: Color.fromARGB(0, 118, 118, 118)),
-    titleTextStyle: TextStyle(color: Color.fromARGB(0, 118, 118, 118), fontSize: 18),
-    
+    titleTextStyle: TextStyle(color: Color.fromARGB(0, 118, 118, 118), fontSize: 18),    
   );
 }

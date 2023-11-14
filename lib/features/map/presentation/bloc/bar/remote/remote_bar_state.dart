@@ -9,7 +9,7 @@ abstract class RemoteBarsState extends Equatable {
   const RemoteBarsState({this.bars, this.exception});
 
   @override
-  List<Object> get props => [bars!, exception!];
+  List<Object?> get props => [bars, exception];
 }
 
 class RemoteBarsLoading extends RemoteBarsState {

@@ -23,11 +23,13 @@ dependencies:
   cached_network_image: ^3.3.0
 
   retrofit: ^4.0.1
-  flutter_hooks: ^0.20.1
+  flutter_hooks: ^0.20.3
 
   yandex_mapkit: ^3.2.0
   geolocator: ^9.0.2
   dio: ^5.3.3
+  vexana: ^3.5.4
+  after_layout: ^1.2.0
 
 dev_dependencies:
   flutter_test:
@@ -39,6 +41,10 @@ dev_dependencies:
   build_runner: ^2.4.6
 
 flutter:
+  assets:
+    - assets/icons/placemark.png
+    - assets/icons/placemark_pin.png
+
   uses-material-design: true
 
   fonts:
@@ -52,4 +58,8 @@ flutter:
     - family: Soledago
       fonts:
         - asset: assets/fonts/soledago/Soledago.ttf
+          weight: 700
+    - family: AppleColorEmoji
+      fonts:
+        - asset: assets/fonts/apple_color_emoji/AppleColorEmoji.ttf
           weight: 700

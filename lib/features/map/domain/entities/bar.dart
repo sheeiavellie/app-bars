@@ -1,4 +1,4 @@
-import 'package:bars/features/map/domain/app_lat_long.dart';
+import 'package:bars/features/map/data/models/app_lat_long.dart';
 import 'package:equatable/equatable.dart';
 
 class BarEntity extends Equatable {

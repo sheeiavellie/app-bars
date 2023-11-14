@@ -43,8 +43,9 @@ class _BarsApiService implements BarsApiService {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    var value = _result.data!
-        .map((dynamic i) => BarModel.fromJson(i as Map<String, dynamic>))
+
+    List<BarModel> value = _result.data!
+        .map<BarModel>((dynamic i) => BarModel.fromJson(i as Map<String, dynamic>))
         .toList();
     final httpResponse = HttpResponse(value, _result);
     return httpResponse;

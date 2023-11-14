@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:bars/features/map/data/services/location_service.dart';
-import 'package:bars/features/map/domain/app_lat_long.dart';
+import 'package:bars/features/map/data/models/app_lat_long.dart';
 import 'package:flutter/material.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
@@ -19,9 +19,9 @@ class _MapScreenState extends State<MapScreen> {
 
   final List<MapObject> mapObjects = [];
 
-  final MapObjectId mapObjectId = const MapObjectId('normal_icon_placemark');
+  //final MapObjectId mapObjectId = const MapObjectId('normal_icon_placemark');
 
-  int i = 0;
+  //int i = 0;
 
   @override
   void initState() {
@@ -79,9 +79,11 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 
+  
+
   Future<void> _initPermission() async {
-    if (!await LocationService().checkPermission()) {
-      await LocationService().requestPermission();
+    if (!await LocationServiceImpl().checkPermission()) {
+      await LocationServiceImpl().requestPermission();
     }
     await _fetchCurrentLocation();
   }
@@ -90,7 +92,7 @@ class _MapScreenState extends State<MapScreen> {
     AppLatLong location;
     const defLocation = StPetersburgLocation();
     try {
-      location = await LocationService().getCurrentLocation();
+      location = await LocationServiceImpl().getCurrentLocation();
     } catch(_) {
       location = defLocation;
     }

@@ -1,8 +1,8 @@
-import 'package:bars/features/map/domain/app_lat_long.dart';
-import 'package:bars/features/map/domain/services/app_location.dart';
+import 'package:bars/features/map/data/models/app_lat_long.dart';
+import 'package:bars/features/map/domain/services/location_service.dart';
 import 'package:geolocator/geolocator.dart';
 
-class LocationService implements AppLocation {
+class LocationServiceImpl implements LocationService {
   final defLocation = const StPetersburgLocation(); 
   
   @override

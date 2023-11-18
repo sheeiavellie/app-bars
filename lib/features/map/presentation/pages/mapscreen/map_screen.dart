@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:typed_data';
 import 'dart:ui';
 
+import 'package:bars/core/constants/constants.dart';
 import 'package:bars/features/map/presentation/bloc/bar/remote/remote_bar_bloc.dart';
 import 'package:bars/features/map/presentation/bloc/bar/remote/remote_bar_event.dart';
 import 'package:bars/features/map/presentation/bloc/bar/remote/remote_bar_state.dart';
@@ -40,7 +41,7 @@ class _MapScreenState extends State<MapScreen> {
       body: _buildBody(),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          BlocProvider.of<RemoteBarsBloc>(context).add(const GetBars());
+          BlocProvider.of<RemoteBarsBloc>(context).add(const GetBarByID(5));
         },
       ),
     );
@@ -54,23 +55,22 @@ class _MapScreenState extends State<MapScreen> {
           color: Colors.black,
         ),
       ),
+      backgroundColor: Color.fromRGBO(234, 221, 255, 1),
     );
   }
 
   _buildBody() {
     return BlocListener<RemoteBarsBloc, RemoteBarsState>(
       listener: (context, state) async {
-        if (state is RemoteBarsLoading) {
-
-        }
         if (state is RemoteBarsException) {
-          
+
         }
         if (state is RemoteBarsDone) {
           Iterable<Future<MapObject>> mappedList = state.bars!
           .map<Future<PlacemarkMapObject>>((BarEntity i) async => await PlacemarkMapObject(
             mapId: MapObjectId(i.id!.toString()),
             point: Point(latitude: i.geolocation!.lat, longitude: i.geolocation!.long),
+            
             icon: PlacemarkIcon.composite([
               PlacemarkCompositeIconItem(
                 name: 'emoji',
@@ -82,6 +82,15 @@ class _MapScreenState extends State<MapScreen> {
               ),
             ]),
             opacity: 1,
+            onTap: (mapObject, point) => showModalBottomSheet<void>(
+              context: context,
+              builder: (context) => _buildBottomSheet(i),
+              showDragHandle: true,
+              enableDrag: true,
+              isScrollControlled: true,
+              barrierColor: Colors.transparent,              
+              backgroundColor: Color.fromRGBO(234, 221, 255, 1),              
+            ),
           )).toList();
 
           Future<List<MapObject>> futureList = Future.wait(mappedList);
@@ -105,17 +114,44 @@ class _MapScreenState extends State<MapScreen> {
       },
       mapObjects: mapObjects,
       onCameraPositionChanged: (cameraPosition, reason, finished) async {
-        final vr = await _mapController.getVisibleRegion();
-        log("lat: ${cameraPosition.target.latitude}");
-        log("long: ${cameraPosition.target.longitude}");
-        log("zoom: ${cameraPosition.zoom}");
-        log("------------------------");
-        log("top left: ${vr.topLeft.latitude} ${vr.topLeft.longitude}");
-        log("bottom right: ${vr.bottomRight.latitude} ${vr.bottomRight.longitude}");
-        log("bottom left: ${vr.bottomLeft.latitude} ${vr.bottomLeft.longitude}");
-        log("top right: ${vr.topRight.latitude} ${vr.topRight.longitude}");
-        log("------------------------");
+        //final vr = await _mapController.getVisibleRegion();
+        // log("lat: ${cameraPosition.target.latitude}");
+        // log("long: ${cameraPosition.target.longitude}");
+        // log("zoom: ${cameraPosition.zoom}");
+        // log("------------------------");
+        // log("top left: ${vr.topLeft.latitude} ${vr.topLeft.longitude}");
+        // log("bottom right: ${vr.bottomRight.latitude} ${vr.bottomRight.longitude}");
+        // log("bottom left: ${vr.bottomLeft.latitude} ${vr.bottomLeft.longitude}");
+        // log("top right: ${vr.topRight.latitude} ${vr.topRight.longitude}");
+        // log("------------------------");
       },
+    );
+  }
+
+  Widget _buildBottomSheet(BarEntity bar) {
+    return DraggableScrollableSheet(
+      builder:(context, scrollController) => Center(
+        child: ListView(
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text('${bar.name}${bar.char_emoji}'),
+                ElevatedButton(
+                  child: const Text('Close BottomSheet'),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ],
+            ),
+            Text(loremIpsum),
+            Text(loremIpsum),
+            Text(loremIpsum),
+            Text(loremIpsum),
+            Text(loremIpsum),
+          ],
+        ),
+      ),
     );
   } 
 
@@ -149,5 +185,41 @@ class _MapScreenState extends State<MapScreen> {
     final pngBytes = await image.toByteData(format: ImageByteFormat.png);
 
     return pngBytes!.buffer.asUint8List();
+  }
+}
+
+class BottomSheetExample extends StatelessWidget {
+  const BottomSheetExample({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: ElevatedButton(
+        child: const Text('showModalBottomSheet'),
+        onPressed: () {
+          showModalBottomSheet<void>(
+            context: context,
+            builder: (BuildContext context) {
+              return SizedBox(
+                height: 200,
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      const Text('Modal BottomSheet'),
+                      ElevatedButton(
+                        child: const Text('Close BottomSheet'),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
   }
 }

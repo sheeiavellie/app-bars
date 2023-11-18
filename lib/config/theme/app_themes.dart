@@ -6,7 +6,6 @@ ThemeData theme() {
     scaffoldBackgroundColor: Colors.white,
     fontFamily: 'Finlandica',
     appBarTheme: appBarTheme(),
-    useMaterial3: true,
   );
 }
 

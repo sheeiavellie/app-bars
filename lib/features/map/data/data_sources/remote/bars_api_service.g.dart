@@ -43,10 +43,37 @@ class _BarsApiService implements BarsApiService {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-
     List<BarModel> value = _result.data!
         .map<BarModel>((dynamic i) => BarModel.fromJson(i as Map<String, dynamic>))
         .toList();
+    final httpResponse = HttpResponse(value, _result);
+    return httpResponse;
+  }
+
+  @override
+  Future<HttpResponse<BarModel>> getBarByID({required int barId}) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final Map<String, dynamic>? _data = null;
+    final _result = await _dio.fetch<dynamic>(
+        _setStreamType<HttpResponse<BarModel>>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/bars/${barId}',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    BarModel value = BarModel.fromJson(_result.data![0]);
     final httpResponse = HttpResponse(value, _result);
     return httpResponse;
   }

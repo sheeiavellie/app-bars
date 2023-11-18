@@ -3,13 +3,14 @@ import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class RemoteBarsState extends Equatable {
+  final BarEntity? bar;
   final List<BarEntity> ? bars;
   final DioException ? exception;
 
-  const RemoteBarsState({this.bars, this.exception});
+  const RemoteBarsState({this.bars, this.bar, this.exception});
 
   @override
-  List<Object?> get props => [bars, exception];
+  List<Object?> get props => [bars, bar, exception];
 }
 
 class RemoteBarsLoading extends RemoteBarsState {
@@ -18,6 +19,10 @@ class RemoteBarsLoading extends RemoteBarsState {
 
 class RemoteBarsDone extends RemoteBarsState {
   const RemoteBarsDone(List<BarEntity> bars) : super(bars: bars);
+}
+
+class RemoteBarDone extends RemoteBarsState {
+  const RemoteBarDone(BarEntity bar) : super(bar: bar);
 }
 
 class RemoteBarsException extends RemoteBarsState {

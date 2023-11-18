@@ -26,8 +26,12 @@ Future<void> initializeDependencies() async {
   );
 
   //UseCases
-  sl.registerSingleton<GetBarUseCase>(
-    GetBarUseCase(sl())
+  sl.registerSingleton<GetBarsUseCase>(
+    GetBarsUseCase(sl())
+  );
+
+  sl.registerSingleton<GetBarByIDUseCase>(
+    GetBarByIDUseCase(sl())
   );
 
   //Services
@@ -37,7 +41,7 @@ Future<void> initializeDependencies() async {
 
   //Blocs
   sl.registerFactory<RemoteBarsBloc>(
-    () => RemoteBarsBloc(sl())
+    () => RemoteBarsBloc(sl(), sl())
   );
 
 }

@@ -11,4 +11,7 @@ abstract class BarsApiService {
 
   @GET('/bars')
   Future<HttpResponse<List<BarModel>>> getBars();
+
+  @GET('/bars/{id}')
+  Future<HttpResponse<BarModel>> getBarByID({@Path('id') required int barId});
 }

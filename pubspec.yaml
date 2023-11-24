@@ -44,21 +44,25 @@ flutter:
   assets:
     - assets/icons/placemark.png
     - assets/icons/placemark_pin.png
+    - assets/test/534-1000x830.jpg
 
   uses-material-design: true
 
   fonts:
-    - family: Finlandica
+    - family: Helvetica
       fonts:
-        - asset: assets/fonts/finlandica/Finlandica-Regular.ttf
-        - asset: assets/fonts/finlandica/Finlandica-Bold.ttf
+        - asset: assets/fonts/helvetica/helvetica_regular.otf
+        - asset: assets/fonts/helvetica/helvetica_bold.otf
           weight: 700
-        - asset: assets/fonts/finlandica/Finlandica-Italic.ttf
+        - asset: assets/fonts/helvetica/helvetica_oblique.otf
           style: italic
-    - family: Soledago
+    - family: Playfair_Display
       fonts:
-        - asset: assets/fonts/soledago/Soledago.ttf
+        - asset: assets/fonts/playfair_display/PlayfairDisplay-Regular.ttf
+        - asset: assets/fonts/playfair_display/PlayfairDisplay-Bold.ttf
           weight: 700
+        - asset: assets/fonts/playfair_display/PlayfairDisplay-Italic.ttf
+          style: italic
     - family: AppleColorEmoji
       fonts:
         - asset: assets/fonts/apple_color_emoji/AppleColorEmoji.ttf

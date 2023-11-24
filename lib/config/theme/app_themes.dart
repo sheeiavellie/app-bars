@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 ThemeData theme() {
   return ThemeData(
     scaffoldBackgroundColor: Colors.white,
-    fontFamily: 'Finlandica',
+    fontFamily: 'Helvetica',
     appBarTheme: appBarTheme(),
   );
 }

@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:typed_data';
 import 'dart:ui';
 
+import 'package:bars/config/styles/text_styles/text_styles.dart';
 import 'package:bars/core/constants/constants.dart';
 import 'package:bars/features/map/presentation/bloc/bar/remote/remote_bar_bloc.dart';
 import 'package:bars/features/map/presentation/bloc/bar/remote/remote_bar_event.dart';
@@ -104,17 +105,67 @@ class _MapScreenState extends State<MapScreen> {
                             SizedBox(
                               height: 20,
                             ),
-                            Text(loremIpsum),
-                            Text(loremIpsum),
-                            Text(loremIpsum),
-                            Text(loremIpsum),
-                            Text(loremIpsum),
-                            Text(loremIpsum),
-                            Text(loremIpsum),
-                            Text(loremIpsum),
-                            Text(loremIpsum),
-                            Text(loremIpsum),
-                            Text(loremIpsum),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                left: 12,
+                                right: 12,
+                              ),
+                              child: Expanded(
+                                child: Container(
+                                  child: RichText(
+                                    text: TextSpan(
+                                      text: "Таинственный необъяснимый Белградский турничок ",
+                                      
+                                      style: TextStyles.barInfoSheetHeaderStyle,
+                                      children: <TextSpan>[
+                                        TextSpan(
+                                          text: "🛸",
+                                          style: TextStyles.emojiInText(fontSize: 24),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                top: 12,
+                                left: 12,
+                                right: 12,
+                                bottom: 12,
+                              ),
+                              child: Expanded(
+                                child: Column(
+                                  children: <Widget>[
+                                    Container(
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(16),
+                                        child: Image.asset(
+                                          "assets/test/534-1000x830.jpg",
+                                          fit: BoxFit.fitWidth,
+                                          width: double.infinity,
+                                          height: double.infinity,
+                                          alignment: Alignment.topCenter,
+                                        ),
+                                      ),
+                                      height: 240,
+                                    ),
+                                    SizedBox(height: 6,),
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons.map_outlined,
+                                        ),
+                                        Text(
+                                          "12.34567, 12.34567"
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
                             Text(loremIpsum),
                             Text(loremIpsum),
                             Text(loremIpsum),
@@ -139,7 +190,6 @@ class _MapScreenState extends State<MapScreen> {
                                   borderRadius: BorderRadius.circular(15),
                                   color: Colors.grey[350],
                                 ),
-                                //margin: EdgeInsets.only(top: 20, bottom: 20),
                               ),
                             ],
                           ),

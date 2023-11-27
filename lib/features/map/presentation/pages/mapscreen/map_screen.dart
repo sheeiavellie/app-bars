@@ -2,11 +2,11 @@ import 'dart:developer';
 import 'dart:typed_data';
 import 'dart:ui';
 
-import 'package:bars/config/styles/text_styles/text_styles.dart';
-import 'package:bars/core/constants/constants.dart';
 import 'package:bars/features/map/presentation/bloc/bar/remote/remote_bar_bloc.dart';
 import 'package:bars/features/map/presentation/bloc/bar/remote/remote_bar_event.dart';
 import 'package:bars/features/map/presentation/bloc/bar/remote/remote_bar_state.dart';
+import 'package:bars/features/map/presentation/widgets/animated_app_bar.dart';
+import 'package:bars/features/map/presentation/widgets/bar_detailed_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
@@ -19,7 +19,8 @@ class MapScreen extends StatefulWidget {
   State<MapScreen> createState() => _MapScreenState();
 }
 
-class _MapScreenState extends State<MapScreen> {
+class _MapScreenState extends State<MapScreen> with SingleTickerProviderStateMixin {
+  late final AnimationController _animationController;
   late final YandexMapController _mapController;
   late final DraggableScrollableController _draggableScrollableController;
 
@@ -32,15 +33,13 @@ class _MapScreenState extends State<MapScreen> {
     super.initState();
 
     _draggableScrollableController = DraggableScrollableController();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1000),
+    );
 
     _draggableScrollableController.addListener(() {
-      log("${_draggableScrollableController.pixelsToSize(_draggableScrollableController.pixels)}");
-
-      log("${MediaQuery.of(context).size.height}");
-      log("${_draggableScrollableController.pixels}");
-
-      if(_draggableScrollableController.pixels == MediaQuery.of(context).size.height) {
-      //if(MediaQuery.of(context).size.height - _draggableScrollableController.pixels == MediaQuery.of(context).padding.top + kToolbarHeight) {
+      if(_draggableScrollableController.pixels >= MediaQuery.of(context).size.height - (MediaQuery.of(context).viewPadding.top + kToolbarHeight)) {
         log("I'm full");
         setState(() {
           _isBarInfoSheetExtended = true;
@@ -52,14 +51,13 @@ class _MapScreenState extends State<MapScreen> {
         });
       }
     });
-
-
   }
 
   @override
   void dispose() {
     _mapController.dispose();
     _draggableScrollableController.dispose();
+    _animationController.dispose();
     super.dispose();
   }
 
@@ -68,140 +66,13 @@ class _MapScreenState extends State<MapScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: _buildAppBar(_isBarInfoSheetExtended),
-      body: Stack(
-        children: <Widget>[
-          _buildBody(),
-          MediaQuery.removePadding(
-            context: context,
-            removeTop: true,
-            child: DraggableScrollableSheet(
-              controller: _draggableScrollableController,
-              initialChildSize: 0.4,
-              minChildSize: 0.15,
-              snap: true,
-              snapSizes: const [0.15, 0.4, 0.9],
-              builder: (BuildContext context, ScrollController scrollController) {
-                return Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20),
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey,
-                        blurRadius: 5.0,
-                      ),
-                    ],
-                  ),
-                  child: Stack(
-                    //crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Container(                
-                        child: ListView(
-                          controller: scrollController,
-                          children: <Widget>[
-                            SizedBox(
-                              height: 20,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                left: 12,
-                                right: 12,
-                              ),
-                              child: Expanded(
-                                child: Container(
-                                  child: RichText(
-                                    text: TextSpan(
-                                      text: "Таинственный необъяснимый Белградский турничок ",
-                                      
-                                      style: TextStyles.barInfoSheetHeaderStyle,
-                                      children: <TextSpan>[
-                                        TextSpan(
-                                          text: "🛸",
-                                          style: TextStyles.emojiInText(fontSize: 24),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                top: 12,
-                                left: 12,
-                                right: 12,
-                                bottom: 12,
-                              ),
-                              child: Expanded(
-                                child: Column(
-                                  children: <Widget>[
-                                    Container(
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(16),
-                                        child: Image.asset(
-                                          "assets/test/534-1000x830.jpg",
-                                          fit: BoxFit.fitWidth,
-                                          width: double.infinity,
-                                          height: double.infinity,
-                                          alignment: Alignment.topCenter,
-                                        ),
-                                      ),
-                                      height: 240,
-                                    ),
-                                    SizedBox(height: 6,),
-                                    Row(
-                                      children: [
-                                        Icon(
-                                          Icons.map_outlined,
-                                        ),
-                                        Text(
-                                          "12.34567, 12.34567"
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Text(loremIpsum),
-                            Text(loremIpsum),
-                            Text(loremIpsum),
-                            Text(loremIpsum),
-                            Text(loremIpsum),
-                            Text(loremIpsum),
-                            Text(loremIpsum),
-                            Text(loremIpsum),
-                          ],
-                        )
-                      ),
-                      IgnorePointer(
-                        child: SizedBox(
-                          height: 20,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Container(
-                                width: 30,
-                                height: 5,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
-                                  color: Colors.grey[350],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ),
-        ],
+      body: Builder(
+        builder: (context) => Stack(
+          children: <Widget>[
+            _buildBody(),
+            _buildDetailedSheet(),
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
@@ -212,17 +83,20 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   _buildAppBar(bool isBarInfoSheetExtended) {
-    return AppBar(
-      backgroundColor: isBarInfoSheetExtended ? Colors.red[200] : Colors.transparent,
-      leading: Center(child: 
-        isBarInfoSheetExtended ? const Icon(
+    return AnimatedAppBar(
+      backgroundColor: Colors.white, 
+      leading: Center(
+        child: isBarInfoSheetExtended ? const Icon(
           Icons.keyboard_arrow_down,
           color: Colors.black,
           size: 24.0,
           semanticLabel: "Go back to map",
         ) : const SizedBox.shrink(),
       ), 
-      forceMaterialTransparency: !isBarInfoSheetExtended,
+      isVisible: isBarInfoSheetExtended,
+      duration: const Duration(
+        milliseconds: 200,
+      ),
     );
   }
 
@@ -234,33 +108,34 @@ class _MapScreenState extends State<MapScreen> {
         }
         if (state is RemoteBarsDone) {
           Iterable<Future<MapObject>> mappedList = state.bars!
-          .map<Future<PlacemarkMapObject>>((BarEntity i) async => PlacemarkMapObject(
-            mapId: MapObjectId(i.id!.toString()),
-            point: Point(latitude: i.geolocation!.lat, longitude: i.geolocation!.long),
-            
-            icon: PlacemarkIcon.composite([
-              PlacemarkCompositeIconItem(
-                name: 'emoji',
-                style: PlacemarkIconStyle(
-                  image: BitmapDescriptor.fromBytes(await _rawPlacemarkImage(i.char_emoji!, 100)),
-                  anchor: const Offset(0.5, 0.5),
-                  scale: 1,
-                )
-              ),
-            ]),
-            opacity: 1,
-            onTap: (mapObject, point) {
+            .map<Future<PlacemarkMapObject>>((BarEntity i) async => PlacemarkMapObject(
+              mapId: MapObjectId(i.id!.toString()),
+              point: Point(latitude: i.geolocation!.lat, longitude: i.geolocation!.long),
+              
+              icon: PlacemarkIcon.composite([
+                PlacemarkCompositeIconItem(
+                  name: 'emoji',
+                  style: PlacemarkIconStyle(
+                    image: BitmapDescriptor.fromBytes(await _rawPlacemarkImage(i.char_emoji!, 100)),
+                    anchor: const Offset(0.5, 0.5),
+                    scale: 1,
+                  )
+                ),
+              ]),
+              opacity: 1,
+              onTap: (mapObject, point) {
 
-            },
-          )).toList();
+              },
+            ))
+            .toList();
 
           Future<List<MapObject>> futureList = Future.wait(mappedList);
           List<MapObject> result = await futureList;
 
           setState(() {
             mapObjects
-            ..clear()
-            ..addAll(result);
+              ..clear()
+              ..addAll(result);
           });
         }
       },
@@ -286,6 +161,12 @@ class _MapScreenState extends State<MapScreen> {
         // log("top right: ${vr.topRight.latitude} ${vr.topRight.longitude}");
         // log("------------------------");
       },
+    );
+  }
+
+  _buildDetailedSheet() {
+    return BarDetailedSheet(
+      draggableScrollableController: _draggableScrollableController
     );
   }
 

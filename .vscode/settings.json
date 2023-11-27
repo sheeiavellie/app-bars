@@ -3,6 +3,7 @@
         "geolocation",
         "mapkit",
         "Placemark",
-        "Playfair"
+        "Playfair",
+        "vsync"
     ]
 }

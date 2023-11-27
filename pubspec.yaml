@@ -30,6 +30,7 @@ dependencies:
   dio: ^5.3.3
   vexana: ^3.5.4
   after_layout: ^1.2.0
+  flutter_animate: ^4.3.0
 
 dev_dependencies:
   flutter_test:

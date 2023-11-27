@@ -24,6 +24,9 @@ App MVP will feature:
 
 Currently app is under development 🔨👷.
 
+![Alt Text](https://github.com/sheeiavellie/app-bars/tree/main/screenshots/indev.gif)
+
+
 ## API
 
 App uses it's own API: [Bars API](https://github.com/sheeiavellie/api-bars/).

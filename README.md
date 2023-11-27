@@ -24,6 +24,9 @@ App MVP will feature:
 
 Currently app is under development 🔨👷.
 
+Already implemented:
+- GoogleMaps-like map screen with bottom sheet and animated AppBar
+
 ## API
 
 App uses it's own API: [Bars API](https://github.com/sheeiavellie/api-bars/).

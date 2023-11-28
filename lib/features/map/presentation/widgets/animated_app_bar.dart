@@ -23,25 +23,6 @@ class AnimatedAppBar extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _AnimatedAppBarState extends State<AnimatedAppBar> {
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  // }
-
-  // @override
-  // void dispose() {
-  //   super.dispose();
-  // }
-
-  // @override
-  // void didUpdateWidget(covariant AnimatedAppBar oldWidget) {
-  //   super.didUpdateWidget(oldWidget);
-  //   if (widget.isVisible != oldWidget.isVisible) {
-      
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -51,6 +32,6 @@ class _AnimatedAppBarState extends State<AnimatedAppBar> {
     )
     .animate(target: widget.isVisible ? 1 : 0)
     .fade(duration: widget.duration)
-    .slideY(duration: widget.duration);
+    .slideY(duration: widget.duration );
   }
 }

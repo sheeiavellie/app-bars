@@ -19,37 +19,24 @@ class MapScreen extends StatefulWidget {
   State<MapScreen> createState() => _MapScreenState();
 }
 
-class _MapScreenState extends State<MapScreen> with SingleTickerProviderStateMixin {
-  late final AnimationController _animationController;
+class _MapScreenState extends State<MapScreen> {
   late final YandexMapController _mapController;
   late final DraggableScrollableController _draggableScrollableController;
 
-  final List<MapObject> mapObjects = [];
-
-  bool _isBarInfoSheetExtended = false;
+  late final List<MapObject> _mapObjects;
+  late bool _isBottomSheetFullyExtended;
 
   @override
   void initState() {
     super.initState();
 
     _draggableScrollableController = DraggableScrollableController();
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1000),
-    );
+
+    _mapObjects = [];
+    _isBottomSheetFullyExtended = false;
 
     _draggableScrollableController.addListener(() {
-      if(_draggableScrollableController.pixels >= MediaQuery.of(context).size.height - (MediaQuery.of(context).viewPadding.top + kToolbarHeight)) {
-        log("I'm full");
-        setState(() {
-          _isBarInfoSheetExtended = true;
-        });
-      } else {
-        log("I'm not full");
-        setState(() {
-          _isBarInfoSheetExtended = false;          
-        });
-      }
+      _bottomSheetFullExtension();
     });
   }
 
@@ -57,7 +44,6 @@ class _MapScreenState extends State<MapScreen> with SingleTickerProviderStateMix
   void dispose() {
     _mapController.dispose();
     _draggableScrollableController.dispose();
-    _animationController.dispose();
     super.dispose();
   }
 
@@ -65,15 +51,8 @@ class _MapScreenState extends State<MapScreen> with SingleTickerProviderStateMix
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: _buildAppBar(_isBarInfoSheetExtended),
-      body: Builder(
-        builder: (context) => Stack(
-          children: <Widget>[
-            _buildBody(),
-            _buildDetailedSheet(),
-          ],
-        ),
-      ),
+      appBar: _buildAppBar(_isBottomSheetFullyExtended),
+      body: _buildBody(),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           BlocProvider.of<RemoteBarsBloc>(context).add(const GetBars());
@@ -101,6 +80,15 @@ class _MapScreenState extends State<MapScreen> with SingleTickerProviderStateMix
   }
 
   _buildBody() {
+    return Stack(
+      children: <Widget>[
+        _buildMap(),
+        _buildBottomSheet(),
+      ],
+    );
+  }
+
+  _buildMap() {
     return BlocListener<RemoteBarsBloc, RemoteBarsState>(
       listener: (context, state) async {
         if (state is RemoteBarsException) {
@@ -108,66 +96,69 @@ class _MapScreenState extends State<MapScreen> with SingleTickerProviderStateMix
         }
         if (state is RemoteBarsDone) {
           Iterable<Future<MapObject>> mappedList = state.bars!
-            .map<Future<PlacemarkMapObject>>((BarEntity i) async => PlacemarkMapObject(
-              mapId: MapObjectId(i.id!.toString()),
-              point: Point(latitude: i.geolocation!.lat, longitude: i.geolocation!.long),
-              
-              icon: PlacemarkIcon.composite([
-                PlacemarkCompositeIconItem(
-                  name: 'emoji',
-                  style: PlacemarkIconStyle(
-                    image: BitmapDescriptor.fromBytes(await _rawPlacemarkImage(i.char_emoji!, 100)),
-                    anchor: const Offset(0.5, 0.5),
-                    scale: 1,
-                  )
+            .map<Future<PlacemarkMapObject>>((BarEntity i) async => 
+              PlacemarkMapObject(
+                mapId: MapObjectId(
+                  i.id!.toString()
                 ),
-              ]),
-              opacity: 1,
-              onTap: (mapObject, point) {
+                point: Point(
+                  latitude: i.geolocation!.lat, 
+                  longitude: i.geolocation!.long
+                ),              
+                icon: PlacemarkIcon.composite([
+                  PlacemarkCompositeIconItem(
+                    name: 'emoji',
+                    style: PlacemarkIconStyle(
+                      image: BitmapDescriptor.fromBytes(await _rawPlacemarkImage(i.char_emoji!, 100)),
+                      anchor: const Offset(0.5, 0.5),
+                      scale: 1,
+                    )
+                  ),
+                ]),
+                opacity: 1,
+                onTap: (mapObject, point) {
 
-              },
-            ))
+                },
+              )
+            )
             .toList();
 
           Future<List<MapObject>> futureList = Future.wait(mappedList);
           List<MapObject> result = await futureList;
 
           setState(() {
-            mapObjects
+            _mapObjects
               ..clear()
               ..addAll(result);
           });
         }
       },
-      child: _buildMap(),
+      child: YandexMap(
+        onMapCreated: (controller) async {
+          _mapController = controller;
+        },
+        mapObjects: _mapObjects,
+        onCameraPositionChanged: (cameraPosition, reason, finished) async {
+
+        },
+      ),
     );
   }
 
-  _buildMap() {
-    return YandexMap(
-      onMapCreated: (controller) async {
-        _mapController = controller;
-      },
-      mapObjects: mapObjects,
-      onCameraPositionChanged: (cameraPosition, reason, finished) async {
-        //final vr = await _mapController.getVisibleRegion();
-        // log("lat: ${cameraPosition.target.latitude}");
-        // log("long: ${cameraPosition.target.longitude}");
-        // log("zoom: ${cameraPosition.zoom}");
-        // log("------------------------");
-        // log("top left: ${vr.topLeft.latitude} ${vr.topLeft.longitude}");
-        // log("bottom right: ${vr.bottomRight.latitude} ${vr.bottomRight.longitude}");
-        // log("bottom left: ${vr.bottomLeft.latitude} ${vr.bottomLeft.longitude}");
-        // log("top right: ${vr.topRight.latitude} ${vr.topRight.longitude}");
-        // log("------------------------");
-      },
-    );
-  }
-
-  _buildDetailedSheet() {
+  _buildBottomSheet() {
     return BarDetailedSheet(
       draggableScrollableController: _draggableScrollableController
     );
+  }
+  
+  _bottomSheetFullExtension() {
+    final double appBarHeight = MediaQuery.of(context).size.height - 
+      (MediaQuery.of(context).viewPadding.top + kToolbarHeight);
+    final double bottomSheetHeight = _draggableScrollableController.pixels;
+
+    bottomSheetHeight >= appBarHeight ? 
+      setState(() => _isBottomSheetFullyExtended = true) : 
+      setState(() => _isBottomSheetFullyExtended = false);
   }
 
   Future<Uint8List> _rawPlacemarkImage(String emoji, double fontSize) async {

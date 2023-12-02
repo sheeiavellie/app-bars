@@ -1,9 +1,16 @@
+import 'dart:developer';
+
 import 'package:bars/config/styles/text_styles/text_styles.dart';
 import 'package:bars/core/constants/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class BarDetailedSheet extends StatelessWidget {
-  final DraggableScrollableController draggableScrollableController;  
+  final DraggableScrollableController draggableScrollableController;
+
+  static const initialChildSize = 0.4;
+  static const minChildSize = 0.1;
+  static const maxChildSize = 0.9;
 
   const BarDetailedSheet({
     super.key, 
@@ -17,11 +24,11 @@ class BarDetailedSheet extends StatelessWidget {
       removeTop: true,
       child: DraggableScrollableSheet(
         controller: draggableScrollableController,
-        initialChildSize: 0.4,
-        minChildSize: 0.15,
-        maxChildSize: 0.9,
+        initialChildSize: initialChildSize,
+        minChildSize: minChildSize,
+        maxChildSize: maxChildSize,
         snap: true,
-        snapSizes: const [0.15, 0.4, 0.9],
+        snapSizes: const [minChildSize, initialChildSize, maxChildSize],
         builder: (BuildContext context, ScrollController scrollController) {
           return Container(
             decoration: const BoxDecoration(
@@ -52,15 +59,18 @@ class BarDetailedSheet extends StatelessWidget {
                           right: 12,
                         ),
                         child: Container(
+                          height: 50,
+                          color: Colors.amber,
                           child: RichText(
+                            textAlign: TextAlign.left,
+                            softWrap: true,                            
                             text: TextSpan(
-                              text: "Таинственный необъяснимый Белградский турничок ",
-                              
-                              style: TextStyles.barInfoSheetHeaderStyle,
+                              text: "TaumatawhakatangihangakoauauoTamateaturipukakapikimaungahoronukupokaiwhenuakitanatahu ",                              
+                              style: TextStyles.barInfoSheetHeaderStyle(fontSize: 14),
                               children: <TextSpan>[
                                 TextSpan(
                                   text: "🛸",
-                                  style: TextStyles.emojiInText(fontSize: 24),
+                                  style: TextStyles.emojiInText(fontSize: 20),
                                 )
                               ],
                             ),
@@ -102,7 +112,23 @@ class BarDetailedSheet extends StatelessWidget {
                             )
                           ],
                         ),
-                      ),
+                      )
+                        .animate(
+                          adapter: ChangeNotifierAdapter(
+                            draggableScrollableController,
+                            () {
+                              const double animationStart = 0.25;
+                              final double fixedControllerSize = 
+                                (draggableScrollableController.size - BarDetailedSheet.minChildSize) * 
+                                1 / (animationStart - BarDetailedSheet.minChildSize);
+
+                              return draggableScrollableController.size > animationStart ? 1 : fixedControllerSize;
+                            }
+                          )
+                        )
+                        .scaleXY()
+                        .then()
+                        .fade(begin: 0, end: 3),
                       Text(loremIpsum),
                       Text(loremIpsum),
                       Text(loremIpsum),

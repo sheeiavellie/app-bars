@@ -4,6 +4,7 @@
         "mapkit",
         "Placemark",
         "Playfair",
+        "Snappable",
         "vsync"
     ]
 }

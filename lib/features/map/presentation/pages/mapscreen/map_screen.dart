@@ -6,7 +6,8 @@ import 'package:bars/features/map/presentation/bloc/bar/remote/remote_bar_bloc.d
 import 'package:bars/features/map/presentation/bloc/bar/remote/remote_bar_event.dart';
 import 'package:bars/features/map/presentation/bloc/bar/remote/remote_bar_state.dart';
 import 'package:bars/features/map/presentation/widgets/animated_app_bar.dart';
-import 'package:bars/features/map/presentation/widgets/bar_detailed_sheet.dart';
+import 'package:bars/features/map/presentation/widgets/bar_detailed_sheet/bar_detailed_sheet.dart';
+import 'package:bars/features/map/presentation/widgets/bar_detailed_sheet/bar_detailed_sheet_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
@@ -20,11 +21,17 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
+  //Controllers
   late final YandexMapController _mapController;
   late final DraggableScrollableController _draggableScrollableController;
 
+  //Values
+
+  late State statet;
+
+  //States
   late final List<MapObject> _mapObjects;
-  late bool _isBottomSheetFullyExtended;
+  late BarDetailedSheetState _bottomSheetState;
 
   @override
   void initState() {
@@ -33,10 +40,10 @@ class _MapScreenState extends State<MapScreen> {
     _draggableScrollableController = DraggableScrollableController();
 
     _mapObjects = [];
-    _isBottomSheetFullyExtended = false;
+    _bottomSheetState = BarDetailedSheetState.normal;
 
     _draggableScrollableController.addListener(() {
-      _bottomSheetFullExtension();
+      _bottomSheetAppBarExtension();
     });
   }
 
@@ -51,7 +58,7 @@ class _MapScreenState extends State<MapScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: _buildAppBar(_isBottomSheetFullyExtended),
+      appBar: _buildAppBar(),
       body: _buildBody(),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
@@ -61,18 +68,25 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 
-  _buildAppBar(bool isBarInfoSheetExtended) {
+  _buildAppBar() {
     return AnimatedAppBar(
       backgroundColor: Colors.white, 
       leading: Center(
-        child: isBarInfoSheetExtended ? const Icon(
-          Icons.keyboard_arrow_down,
-          color: Colors.black,
-          size: 24.0,
-          semanticLabel: "Go back to map",
-        ) : const SizedBox.shrink(),
-      ), 
-      isVisible: isBarInfoSheetExtended,
+        child: IconButton(
+          icon: const Icon(
+            Icons.keyboard_arrow_down_rounded,
+            color: Colors.black,
+            size: 28.0,
+            semanticLabel: "Go back to map",
+          ),
+          onPressed: () {
+            setState(() {
+              _draggableScrollableController.jumpTo(BarDetailedSheet.initialChildSize);
+            });
+          }, 
+        ),
+      ),
+      barDetailedSheetState: _bottomSheetState,
       duration: const Duration(
         milliseconds: 200,
       ),
@@ -147,18 +161,26 @@ class _MapScreenState extends State<MapScreen> {
 
   _buildBottomSheet() {
     return BarDetailedSheet(
-      draggableScrollableController: _draggableScrollableController
+      draggableScrollableController: _draggableScrollableController,
     );
   }
   
-  _bottomSheetFullExtension() {
+  _bottomSheetAppBarExtension() {
     final double appBarHeight = MediaQuery.of(context).size.height - 
       (MediaQuery.of(context).viewPadding.top + kToolbarHeight);
-    final double bottomSheetHeight = _draggableScrollableController.pixels;
+    final double currentBottomSheetHeight = _draggableScrollableController.pixels;
 
-    bottomSheetHeight >= appBarHeight ? 
-      setState(() => _isBottomSheetFullyExtended = true) : 
-      setState(() => _isBottomSheetFullyExtended = false);
+    if(currentBottomSheetHeight >= appBarHeight) {
+      _setBottomSheetState(BarDetailedSheetState.expanded);
+    } else {
+      _setBottomSheetState(BarDetailedSheetState.normal);
+    }
+  }
+
+  _setBottomSheetState(BarDetailedSheetState newState) {
+    if(newState != _bottomSheetState) {
+      setState(() => _bottomSheetState = newState);
+    } 
   }
 
   Future<Uint8List> _rawPlacemarkImage(String emoji, double fontSize) async {

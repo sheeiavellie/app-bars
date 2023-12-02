@@ -1,17 +1,18 @@
+import 'package:bars/features/map/presentation/widgets/bar_detailed_sheet/bar_detailed_sheet_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 class AnimatedAppBar extends StatefulWidget implements PreferredSizeWidget {
   final Color backgroundColor;
   final Widget leading;
-  final bool isVisible;
+  final BarDetailedSheetState barDetailedSheetState;
   final Duration duration;
 
   AnimatedAppBar({
     Key? key, 
     required this.backgroundColor,
     required this.leading,
-    required this.isVisible, 
+    required this.barDetailedSheetState, 
     required this.duration,
   }) : super(key: key);
 
@@ -28,10 +29,9 @@ class _AnimatedAppBarState extends State<AnimatedAppBar> {
     return AppBar(
       backgroundColor: widget.backgroundColor,
       leading: widget.leading,
-      //forceMaterialTransparency: !widget.isVisible,
     )
-    .animate(target: widget.isVisible ? 1 : 0)
-    .fade(duration: widget.duration)
-    .slideY(duration: widget.duration );
+    .animate(target: widget.barDetailedSheetState == BarDetailedSheetState.expanded ? 1 : 0)
+    .slideY(duration: Duration(milliseconds: widget.duration.inMilliseconds - 100))
+    .fade(duration: widget.duration);
   }
 }

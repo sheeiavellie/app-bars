@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:bars/config/styles/text_styles/text_styles.dart';
 import 'package:bars/core/constants/constants.dart';
 import 'package:flutter/material.dart';

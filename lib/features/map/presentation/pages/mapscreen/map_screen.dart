@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:typed_data';
 import 'dart:ui';
 
@@ -27,7 +26,6 @@ class _MapScreenState extends State<MapScreen> {
 
   //Values
 
-  late State statet;
 
   //States
   late final List<MapObject> _mapObjects;

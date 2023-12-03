@@ -10,7 +10,19 @@ class BarDetailedSheet extends StatelessWidget {
   static const minChildSize = 0.1;
   static const maxChildSize = 0.9;
 
-  const BarDetailedSheet({
+  late final ChangeNotifierAdapter _sheetReduceAdapter = ChangeNotifierAdapter(
+    draggableScrollableController,
+    () {
+      const double animationStart = 0.25;
+      final double fixedControllerSize = 
+        (draggableScrollableController.size - BarDetailedSheet.minChildSize) * 
+        1 / (animationStart - BarDetailedSheet.minChildSize);
+
+      return draggableScrollableController.size > animationStart ? 1 : fixedControllerSize;
+    }
+  );  
+
+  BarDetailedSheet({
     super.key, 
     required this.draggableScrollableController
   });
@@ -51,82 +63,8 @@ class BarDetailedSheet extends StatelessWidget {
                       const SizedBox(
                         height: 20,
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          left: 12,
-                          right: 12,
-                        ),
-                        child: Container(
-                          height: 50,
-                          color: Colors.amber,
-                          child: RichText(
-                            textAlign: TextAlign.left,
-                            softWrap: true,                            
-                            text: TextSpan(
-                              text: "TaumatawhakatangihangakoauauoTamateaturipukakapikimaungahoronukupokaiwhenuakitanatahu ",                              
-                              style: TextStyles.barInfoSheetHeaderStyle(fontSize: 14),
-                              children: <TextSpan>[
-                                TextSpan(
-                                  text: "🛸",
-                                  style: TextStyles.emojiInText(fontSize: 20),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          top: 12,
-                          left: 12,
-                          right: 12,
-                          bottom: 12,
-                        ),
-                        child: Column(
-                          children: <Widget>[
-                            Container(
-                              height: 240,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(16),
-                                child: Image.asset(
-                                  "assets/test/534-1000x830.jpg",
-                                  fit: BoxFit.fitWidth,
-                                  width: double.infinity,
-                                  height: double.infinity,
-                                  alignment: Alignment.topCenter,
-                                ),
-                              ),                                    
-                            ),
-                            const SizedBox(height: 6,),
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.map_outlined,
-                                ),
-                                Text(
-                                  "12.34567, 12.34567"
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                      )
-                        .animate(
-                          adapter: ChangeNotifierAdapter(
-                            draggableScrollableController,
-                            () {
-                              const double animationStart = 0.25;
-                              final double fixedControllerSize = 
-                                (draggableScrollableController.size - BarDetailedSheet.minChildSize) * 
-                                1 / (animationStart - BarDetailedSheet.minChildSize);
-
-                              return draggableScrollableController.size > animationStart ? 1 : fixedControllerSize;
-                            }
-                          )
-                        )
-                        .scaleXY()
-                        .then()
-                        .fade(begin: 0, end: 3),
+                      _buildTitle(),
+                      _buildImageAndCoordinates(),                      
                       Text(loremIpsum),
                       Text(loremIpsum),
                       Text(loremIpsum),
@@ -162,5 +100,81 @@ class BarDetailedSheet extends StatelessWidget {
         },
       ),
     );
+  }
+
+  _buildTitle() {
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 12,
+        right: 12,
+      ),
+      child: Container(
+        height: 50,
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: RichText(
+            textAlign: TextAlign.start,
+            softWrap: true,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 2,
+            text: TextSpan(
+              text: "Таинственный абдактивный Белградский Турничек" " ",
+              style: TextStyles.barInfoSheetHeaderStyle(fontSize: 18),
+              children: <TextSpan>[
+                TextSpan(
+                  text: "🛸",
+                  style: TextStyles.emojiInText(fontSize: 18),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  _buildImageAndCoordinates() {
+    return Padding(
+      padding: const EdgeInsets.only(
+        top: 12,
+        left: 12,
+        right: 12,
+        bottom: 12,
+      ),
+      child: Column(
+        children: <Widget>[
+          Container(
+            height: 240,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: Image.asset(
+                "assets/test/534-1000x830.jpg",
+                fit: BoxFit.fitWidth,
+                width: double.infinity,
+                height: double.infinity,
+                alignment: Alignment.topCenter,
+              ),
+            ),
+          ),
+          const SizedBox(height: 6,),
+          Row(
+            children: [
+              Icon(
+                Icons.map_outlined,
+              ),
+              Text(
+                "12.34567, 12.34567"
+              ),
+            ],
+          )
+        ],
+      ),
+    )
+      .animate(
+        adapter: _sheetReduceAdapter,
+      )
+      .scaleXY()
+      .then()
+      .fade(begin: 0, end: 3);
   }
 }

@@ -2,6 +2,7 @@ import 'package:bars/config/styles/text_styles/text_styles.dart';
 import 'package:bars/features/map/domain/entities/bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:intl/intl.dart';
 
 class BarDetails extends StatelessWidget {
   final BarEntity bar;
@@ -41,11 +42,11 @@ class BarDetails extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             maxLines: 2,
             text: TextSpan(
-              text: "Таинственный абдактивный Белградский Турничек" " ",
+              text: "${bar.name}" " ",
               style: TextStyles.barInfoSheetHeaderStyle(fontSize: 18),
               children: <TextSpan>[
                 TextSpan(
-                  text: "🛸",
+                  text: "${bar.char_emoji}",
                   style: TextStyles.emojiInText(fontSize: 18),
                 )
               ],
@@ -70,9 +71,9 @@ class BarDetails extends StatelessWidget {
             height: 240,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(16),
-              child: Image.asset(
-                "assets/test/534-1000x830.jpg",
-                fit: BoxFit.fitWidth,
+              child: Image.network(
+                "${bar.image_url}",
+                fit: BoxFit.cover,
                 width: double.infinity,
                 height: double.infinity,
                 alignment: Alignment.topCenter,
@@ -82,11 +83,11 @@ class BarDetails extends StatelessWidget {
           const SizedBox(height: 6,),
           Row(
             children: [
-              Icon(
+              const Icon(
                 Icons.map_outlined,
               ),
               Text(
-                "12.34567, 12.34567"
+                "${NumberFormat('#.0000').format(bar.geolocation!.lat)}, ${NumberFormat('#.0000').format(bar.geolocation!.long)}"
               ),
             ],
           )

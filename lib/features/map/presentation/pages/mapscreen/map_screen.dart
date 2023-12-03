@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:typed_data';
 import 'dart:ui';
 
@@ -30,7 +31,7 @@ class _MapScreenState extends State<MapScreen> {
   //States
   late final List<MapObject> _mapObjects;
   late BarDetailedSheetState _bottomSheetState;
-  late BarEntity selectedBar;
+  BarEntity? selectedBar;
 
   @override
   void initState() {
@@ -79,14 +80,12 @@ class _MapScreenState extends State<MapScreen> {
             semanticLabel: "Go back to map",
           ),
           onPressed: () {
-            setState(() {
-              _draggableScrollableController
-                .animateTo(
-                  BarDetailedSheet.initialChildSize,
-                  duration: const Duration(milliseconds: 100),
-                  curve: Curves.linear,
-                );
-            });
+            _draggableScrollableController
+              .animateTo(
+                BarDetailedSheet.initialChildSize,
+                duration: const Duration(milliseconds: 100),
+                curve: Curves.linear,
+              );
           }, 
         ),
       ),
@@ -109,6 +108,12 @@ class _MapScreenState extends State<MapScreen> {
   _buildMap() {
     return BlocListener<RemoteBarsBloc, RemoteBarsState>(
       listener: (context, state) async {
+        if (state is RemoteBarDone) { 
+          log("Ya prishel! ${state.bar!.id}");
+          setState(() {
+            selectedBar = state.bar!;
+          });      
+        }
         if (state is RemoteBarsException) {
 
         }
@@ -135,8 +140,20 @@ class _MapScreenState extends State<MapScreen> {
                 ]),
                 opacity: 1,
                 onTap: (mapObject, point) {
+                  log("${mapObject.mapId.value}");
+                  log("${selectedBar}");
 
-                },
+                  if(selectedBar != null && selectedBar!.id == int.parse(mapObject.mapId.value)) {
+                    _draggableScrollableController
+                      .animateTo(
+                        BarDetailedSheet.maxChildSize,
+                        duration: const Duration(milliseconds: 100),
+                        curve: Curves.linear,
+                      );
+                  } else {
+                    BlocProvider.of<RemoteBarsBloc>(context).add(GetBarByID(int.parse(mapObject.mapId.value)));
+                  }
+                }
               )
             )
             .toList();
@@ -166,6 +183,7 @@ class _MapScreenState extends State<MapScreen> {
   _buildBottomSheet() {
     return BarDetailedSheet(
       draggableScrollableController: _draggableScrollableController,
+      bar: selectedBar,
     );
   }
   

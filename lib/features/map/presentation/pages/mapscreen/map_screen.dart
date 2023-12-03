@@ -79,7 +79,12 @@ class _MapScreenState extends State<MapScreen> {
           ),
           onPressed: () {
             setState(() {
-              _draggableScrollableController.jumpTo(BarDetailedSheet.initialChildSize);
+              _draggableScrollableController
+                .animateTo(
+                  BarDetailedSheet.initialChildSize,
+                  duration: const Duration(milliseconds: 100),
+                  curve: Curves.linear,
+                );
             });
           }, 
         ),

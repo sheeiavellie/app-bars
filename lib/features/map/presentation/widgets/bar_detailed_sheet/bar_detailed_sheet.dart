@@ -1,16 +1,18 @@
-import 'package:bars/config/styles/text_styles/text_styles.dart';
 import 'package:bars/core/constants/constants.dart';
+import 'package:bars/features/map/domain/entities/bar.dart';
+import 'package:bars/features/map/presentation/widgets/bar_detailed_sheet/bar_detailed_sheet_content/bar_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 class BarDetailedSheet extends StatelessWidget {
-  final DraggableScrollableController draggableScrollableController;
+  final DraggableScrollableController draggableScrollableController; 
+  final BarEntity? bar;
 
   static const initialChildSize = 0.4;
   static const minChildSize = 0.1;
   static const maxChildSize = 0.9;
 
-  late final ChangeNotifierAdapter _sheetReduceAdapter = ChangeNotifierAdapter(
+  late final ChangeNotifierAdapter sheetReduceAdapter = ChangeNotifierAdapter(
     draggableScrollableController,
     () {
       const double animationStart = 0.25;
@@ -24,7 +26,8 @@ class BarDetailedSheet extends StatelessWidget {
 
   BarDetailedSheet({
     super.key, 
-    required this.draggableScrollableController
+    required this.draggableScrollableController, 
+    this.bar, 
   });
 
   @override
@@ -63,8 +66,7 @@ class BarDetailedSheet extends StatelessWidget {
                       const SizedBox(
                         height: 20,
                       ),
-                      _buildTitle(),
-                      _buildImageAndCoordinates(),                      
+                      _buildContent(),
                       Text(loremIpsum),
                       Text(loremIpsum),
                       Text(loremIpsum),
@@ -76,24 +78,7 @@ class BarDetailedSheet extends StatelessWidget {
                     ],
                   )
                 ),
-                IgnorePointer(
-                  child: SizedBox(
-                    height: 20,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          width: 30,
-                          height: 5,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            color: Colors.grey[350],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                _buildDragHandle(),
               ],
             ),
           );
@@ -102,79 +87,37 @@ class BarDetailedSheet extends StatelessWidget {
     );
   }
 
-  _buildTitle() {
-    return Padding(
-      padding: const EdgeInsets.only(
-        left: 12,
-        right: 12,
-      ),
-      child: Container(
-        height: 50,
-        child: Align(
-          alignment: Alignment.centerLeft,
-          child: RichText(
-            textAlign: TextAlign.start,
-            softWrap: true,
-            overflow: TextOverflow.ellipsis,
-            maxLines: 2,
-            text: TextSpan(
-              text: "Таинственный абдактивный Белградский Турничек" " ",
-              style: TextStyles.barInfoSheetHeaderStyle(fontSize: 18),
-              children: <TextSpan>[
-                TextSpan(
-                  text: "🛸",
-                  style: TextStyles.emojiInText(fontSize: 18),
-                )
-              ],
+  _buildDragHandle() {
+    return IgnorePointer(
+      child: SizedBox(
+        height: 20,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              width: 30,
+              height: 5,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                color: Colors.grey[350],
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );
   }
 
-  _buildImageAndCoordinates() {
-    return Padding(
-      padding: const EdgeInsets.only(
-        top: 12,
-        left: 12,
-        right: 12,
-        bottom: 12,
-      ),
-      child: Column(
-        children: <Widget>[
-          Container(
-            height: 240,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(16),
-              child: Image.asset(
-                "assets/test/534-1000x830.jpg",
-                fit: BoxFit.fitWidth,
-                width: double.infinity,
-                height: double.infinity,
-                alignment: Alignment.topCenter,
-              ),
-            ),
-          ),
-          const SizedBox(height: 6,),
-          Row(
-            children: [
-              Icon(
-                Icons.map_outlined,
-              ),
-              Text(
-                "12.34567, 12.34567"
-              ),
-            ],
-          )
-        ],
-      ),
-    )
-      .animate(
-        adapter: _sheetReduceAdapter,
-      )
-      .scaleXY()
-      .then()
-      .fade(begin: 0, end: 3);
+  _buildContent() {
+    if(bar != null) {
+      return BarDetails(
+        bar: bar!, 
+        draggableScrollableController: draggableScrollableController, 
+        sheetReduceAdapter: sheetReduceAdapter
+      );
+    } else {
+      return SizedBox.shrink();
+    }
   }
 }
+  

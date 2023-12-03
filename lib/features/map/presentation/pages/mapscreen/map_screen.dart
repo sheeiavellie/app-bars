@@ -30,6 +30,7 @@ class _MapScreenState extends State<MapScreen> {
   //States
   late final List<MapObject> _mapObjects;
   late BarDetailedSheetState _bottomSheetState;
+  late BarEntity selectedBar;
 
   @override
   void initState() {

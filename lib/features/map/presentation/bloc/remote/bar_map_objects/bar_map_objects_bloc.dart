@@ -13,10 +13,10 @@ class BarMapObjectsBloc extends Bloc<BarMapObjectsEvent, BarMapObjectsState> {
   final GetBarsUseCase _getBarsUseCase;
 
   BarMapObjectsBloc(this._getBarsUseCase) : super(const BarMapObjectsLoading()) {
-    on <GetBarMapObjects> (onGetBars);
+    on <UpdateBarMapObjects> (onUpdateBarMapObjects);
   }
 
-  void onGetBars(GetBarMapObjects event, Emitter<BarMapObjectsState> emit) async {
+  void onUpdateBarMapObjects(UpdateBarMapObjects event, Emitter<BarMapObjectsState> emit) async {
     final dataState = await _getBarsUseCase();
 
     emit(

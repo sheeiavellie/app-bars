@@ -7,6 +7,6 @@ sealed class BarMapObjectsEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class GetBarMapObjects extends BarMapObjectsEvent {
-  const GetBarMapObjects();
+class UpdateBarMapObjects extends BarMapObjectsEvent {
+  const UpdateBarMapObjects();
 }

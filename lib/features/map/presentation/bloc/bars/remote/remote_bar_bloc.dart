@@ -1,7 +1,7 @@
 import 'package:bars/core/resources/data_state.dart';
 import 'package:bars/features/map/domain/usecases/get_bar.dart';
-import 'package:bars/features/map/presentation/bloc/bar/remote/remote_bar_event.dart';
-import 'package:bars/features/map/presentation/bloc/bar/remote/remote_bar_state.dart';
+import 'package:bars/features/map/presentation/bloc/bars/remote/remote_bar_event.dart';
+import 'package:bars/features/map/presentation/bloc/bars/remote/remote_bar_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RemoteBarsBloc extends Bloc<RemoteBarsEvent, RemoteBarsState> {

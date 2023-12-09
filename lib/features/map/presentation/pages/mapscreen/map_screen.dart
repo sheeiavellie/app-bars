@@ -2,12 +2,11 @@ import 'dart:developer';
 import 'dart:typed_data';
 import 'dart:ui';
 
-import 'package:bars/features/map/presentation/bloc/bar/remote/remote_bar_bloc.dart';
-import 'package:bars/features/map/presentation/bloc/bar/remote/remote_bar_event.dart';
-import 'package:bars/features/map/presentation/bloc/bar/remote/remote_bar_state.dart';
+import 'package:bars/features/map/presentation/bloc/bars/remote/remote_bar_bloc.dart';
+import 'package:bars/features/map/presentation/bloc/bars/remote/remote_bar_event.dart';
+import 'package:bars/features/map/presentation/bloc/bars/remote/remote_bar_state.dart';
 import 'package:bars/features/map/presentation/widgets/animated_app_bar.dart';
 import 'package:bars/features/map/presentation/widgets/bar_detailed_sheet/bar_detailed_sheet.dart';
-import 'package:bars/features/map/presentation/widgets/bar_detailed_sheet/bar_detailed_sheet_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
@@ -89,7 +88,7 @@ class _MapScreenState extends State<MapScreen> {
           }, 
         ),
       ),
-      barDetailedSheetState: _bottomSheetState,
+      isVisible: _bottomSheetState == BarDetailedSheetState.expanded,
       duration: const Duration(
         milliseconds: 200,
       ),
@@ -236,4 +235,9 @@ class _MapScreenState extends State<MapScreen> {
 
     return pngBytes!.buffer.asUint8List();
   }
+}
+
+enum BarDetailedSheetState {
+  expanded,
+  normal,
 }

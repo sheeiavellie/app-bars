@@ -1,7 +1,7 @@
 import 'package:bars/core/resources/data_state.dart';
 import 'package:bars/core/usecase/usecase.dart';
 import 'package:bars/features/map/domain/entities/bar.dart';
-import 'package:bars/features/map/domain/repository/bar_repository.dart';
+import 'package:bars/features/map/domain/repositories/bar_repository.dart';
 
 class GetBarsUseCase implements UseCase<DataState<List<BarEntity>>, void> {
   final BarRepository _barRepository;

@@ -1,5 +1,5 @@
 import 'package:bars/config/theme/app_themes.dart';
-import 'package:bars/features/map/presentation/bloc/bar/remote/remote_bar_bloc.dart';
+import 'package:bars/features/map/presentation/bloc/bars/remote/remote_bar_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:bars/features/map/presentation/pages/home/home.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

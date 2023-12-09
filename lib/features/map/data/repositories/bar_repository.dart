@@ -5,7 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:bars/core/resources/data_state.dart';
 import 'package:bars/features/map/data/data_sources/remote/bars_api_service.dart';
 import 'package:bars/features/map/data/models/bar.dart';
-import 'package:bars/features/map/domain/repository/bar_repository.dart';
+import 'package:bars/features/map/domain/repositories/bar_repository.dart';
 
 class BarRepositoryImpl implements BarRepository {
   final BarsApiService _barsApiService;

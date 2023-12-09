@@ -7,8 +7,11 @@ sealed class BarDetailedSheetEvent extends Equatable {
   List<Object> get props => [];
 }
 
-// class GetBarByID extends RemoteBarsEvent {
-//   final int barId;
+class UpdateBarDetailedSheet extends BarDetailedSheetEvent {
+  final int barId;
 
-//   const GetBarByID(this.barId);
-// }
+  const UpdateBarDetailedSheet({required this.barId});
+
+  @override
+  List<Object> get props => [barId];
+}

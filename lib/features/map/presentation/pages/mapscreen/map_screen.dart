@@ -2,9 +2,7 @@ import 'dart:developer';
 import 'dart:typed_data';
 import 'dart:ui';
 
-import 'package:bars/features/map/presentation/bloc/bars/remote/remote_bar_bloc.dart';
-import 'package:bars/features/map/presentation/bloc/bars/remote/remote_bar_event.dart';
-import 'package:bars/features/map/presentation/bloc/bars/remote/remote_bar_state.dart';
+import 'package:bars/features/map/presentation/bloc/remote/bar_map_objects/bar_map_objects_bloc.dart';
 import 'package:bars/features/map/presentation/widgets/animated_app_bar.dart';
 import 'package:bars/features/map/presentation/widgets/bar_detailed_sheet/bar_detailed_sheet.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +28,6 @@ class _MapScreenState extends State<MapScreen> {
   //States
   late final List<MapObject> _mapObjects;
   late BarDetailedSheetState _bottomSheetState;
-  BarEntity? selectedBar;
 
   @override
   void initState() {
@@ -61,7 +58,7 @@ class _MapScreenState extends State<MapScreen> {
       body: _buildBody(),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          BlocProvider.of<RemoteBarsBloc>(context).add(const GetBars());
+          BlocProvider.of<BarMapObjectsBloc>(context).add(const GetBarMapObjects());
         },
       ),
     );
@@ -105,18 +102,22 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   _buildMap() {
-    return BlocListener<RemoteBarsBloc, RemoteBarsState>(
+    return BlocListener<BarMapObjectsBloc, BarMapObjectsState>(
       listener: (context, state) async {
-        if (state is RemoteBarDone) { 
-          log("Ya prishel! ${state.bar!.id}");
-          setState(() {
-            selectedBar = state.bar!;
-          });      
+        // if (state is RemoteBarDone) { 
+        //   log("Ya prishel! ${state.bar!.id}");
+        //   setState(() {
+        //     selectedBar = state.bar!;
+        //   });      
+        // }
+        if( state is BarMapObjectsLoading) {
+          log("I'm Loading 😏");
         }
-        if (state is RemoteBarsException) {
+        if (state is BarMapObjectsException) {
 
         }
-        if (state is RemoteBarsDone) {
+        if (state is BarMapObjectsDone) {
+          log("I'm done 😏");
           Iterable<Future<MapObject>> mappedList = state.bars!
             .map<Future<PlacemarkMapObject>>((BarEntity i) async => 
               PlacemarkMapObject(
@@ -140,18 +141,17 @@ class _MapScreenState extends State<MapScreen> {
                 opacity: 1,
                 onTap: (mapObject, point) {
                   log("${mapObject.mapId.value}");
-                  log("${selectedBar}");
 
-                  if(selectedBar != null && selectedBar!.id == int.parse(mapObject.mapId.value)) {
-                    _draggableScrollableController
-                      .animateTo(
-                        BarDetailedSheet.maxChildSize,
-                        duration: const Duration(milliseconds: 100),
-                        curve: Curves.linear,
-                      );
-                  } else {
-                    BlocProvider.of<RemoteBarsBloc>(context).add(GetBarByID(int.parse(mapObject.mapId.value)));
-                  }
+                  // if(selectedBar != null && selectedBar!.id == int.parse(mapObject.mapId.value)) {
+                  //   _draggableScrollableController
+                  //     .animateTo(
+                  //       BarDetailedSheet.maxChildSize,
+                  //       duration: const Duration(milliseconds: 100),
+                  //       curve: Curves.linear,
+                  //     );
+                  // } else {
+                  //   BlocProvider.of<RemoteBarsBloc>(context).add(GetBarByID(int.parse(mapObject.mapId.value)));
+                  // }
                 }
               )
             )
@@ -182,7 +182,6 @@ class _MapScreenState extends State<MapScreen> {
   _buildBottomSheet() {
     return BarDetailedSheet(
       draggableScrollableController: _draggableScrollableController,
-      bar: selectedBar,
     );
   }
   

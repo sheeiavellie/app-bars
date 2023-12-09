@@ -1,5 +1,5 @@
 import 'package:bars/config/theme/app_themes.dart';
-import 'package:bars/features/map/presentation/bloc/bars/remote/remote_bar_bloc.dart';
+import 'package:bars/features/map/presentation/bloc/remote/bar_map_objects/bar_map_objects_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:bars/features/map/presentation/pages/home/home.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,7 +10,7 @@ class Application extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => sl<RemoteBarsBloc>(),
+      create: (context) => getIt<BarMapObjectsBloc>(),
       child: MaterialApp(
         // title: 'Yandex Map',
         theme: theme(),

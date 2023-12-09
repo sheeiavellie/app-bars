@@ -4,44 +4,44 @@ import 'package:bars/features/map/data/services/location_service.dart';
 import 'package:bars/features/map/domain/repositories/bar_repository.dart';
 import 'package:bars/features/map/domain/services/location_service.dart';
 import 'package:bars/features/map/domain/usecases/get_bar.dart';
-import 'package:bars/features/map/presentation/bloc/bars/remote/remote_bar_bloc.dart';
+import 'package:bars/features/map/presentation/bloc/remote/bar_map_objects/bar_map_objects_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 
-final sl = GetIt.instance;
+final getIt = GetIt.instance;
 
 Future<void> initializeDependencies() async {
   //Dio
-  sl.registerSingleton<Dio>(
+  getIt.registerSingleton<Dio>(
     Dio()
   );
   
   //Dependencies
-  sl.registerSingleton<BarsApiService>(
-    BarsApiService(sl())
+  getIt.registerSingleton<BarsApiService>(
+    BarsApiService(getIt())
   );
 
-  sl.registerSingleton<BarRepository>(
-    BarRepositoryImpl(sl())
+  getIt.registerSingleton<BarRepository>(
+    BarRepositoryImpl(getIt())
   );
 
   //UseCases
-  sl.registerSingleton<GetBarsUseCase>(
-    GetBarsUseCase(sl())
+  getIt.registerSingleton<GetBarsUseCase>(
+    GetBarsUseCase(getIt())
   );
 
-  sl.registerSingleton<GetBarByIDUseCase>(
-    GetBarByIDUseCase(sl())
+  getIt.registerSingleton<GetBarByIDUseCase>(
+    GetBarByIDUseCase(getIt())
   );
 
   //Services
-  sl.registerSingleton<LocationService>(
+  getIt.registerSingleton<LocationService>(
     LocationServiceImpl()
   );
 
   //Blocs
-  sl.registerFactory<RemoteBarsBloc>(
-    () => RemoteBarsBloc(sl(), sl())
+  getIt.registerFactory<BarMapObjectsBloc>(
+    () => BarMapObjectsBloc(getIt())
   );
 
 }

@@ -4,6 +4,7 @@ import 'package:bars/features/map/data/services/location_service.dart';
 import 'package:bars/features/map/domain/repositories/bar_repository.dart';
 import 'package:bars/features/map/domain/services/location_service.dart';
 import 'package:bars/features/map/domain/usecases/get_bar.dart';
+import 'package:bars/features/map/presentation/bloc/remote/bar_detailed_sheet/bar_detailed_sheet_bloc.dart';
 import 'package:bars/features/map/presentation/bloc/remote/bar_map_objects/bar_map_objects_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
@@ -43,5 +44,7 @@ Future<void> initializeDependencies() async {
   getIt.registerFactory<BarMapObjectsBloc>(
     () => BarMapObjectsBloc(getIt())
   );
-
+  getIt.registerFactory<BarDetailedSheetBloc>(
+    () => BarDetailedSheetBloc(getIt())
+  );
 }

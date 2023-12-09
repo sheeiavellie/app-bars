@@ -2,9 +2,10 @@ import 'dart:developer';
 import 'dart:typed_data';
 import 'dart:ui';
 
+import 'package:bars/features/map/presentation/bloc/remote/bar_detailed_sheet/bar_detailed_sheet_bloc.dart';
 import 'package:bars/features/map/presentation/bloc/remote/bar_map_objects/bar_map_objects_bloc.dart';
 import 'package:bars/features/map/presentation/widgets/animated_app_bar.dart';
-import 'package:bars/features/map/presentation/widgets/bar_detailed_sheet/bar_detailed_sheet.dart';
+import 'package:bars/features/map/presentation/widgets/bar_detailed_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
@@ -23,11 +24,11 @@ class _MapScreenState extends State<MapScreen> {
   late final DraggableScrollableController _draggableScrollableController;
 
   //Values
-
+  int _selectedBarId = -1;
 
   //States
   late final List<MapObject> _mapObjects;
-  late BarDetailedSheetState _bottomSheetState;
+  late bool _isBottomSheetExpanded;
 
   @override
   void initState() {
@@ -36,10 +37,10 @@ class _MapScreenState extends State<MapScreen> {
     _draggableScrollableController = DraggableScrollableController();
 
     _mapObjects = [];
-    _bottomSheetState = BarDetailedSheetState.normal;
+    _isBottomSheetExpanded = false;
 
     _draggableScrollableController.addListener(() {
-      _bottomSheetAppBarExtension();
+      _bottomSheetAppBarExpansion();
     });
   }
 
@@ -58,7 +59,7 @@ class _MapScreenState extends State<MapScreen> {
       body: _buildBody(),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          BlocProvider.of<BarMapObjectsBloc>(context).add(const GetBarMapObjects());
+          BlocProvider.of<BarMapObjectsBloc>(context).add(const UpdateBarMapObjects());
         },
       ),
     );
@@ -85,7 +86,7 @@ class _MapScreenState extends State<MapScreen> {
           }, 
         ),
       ),
-      isVisible: _bottomSheetState == BarDetailedSheetState.expanded,
+      isVisible: _isBottomSheetExpanded,
       duration: const Duration(
         milliseconds: 200,
       ),
@@ -104,12 +105,6 @@ class _MapScreenState extends State<MapScreen> {
   _buildMap() {
     return BlocListener<BarMapObjectsBloc, BarMapObjectsState>(
       listener: (context, state) async {
-        // if (state is RemoteBarDone) { 
-        //   log("Ya prishel! ${state.bar!.id}");
-        //   setState(() {
-        //     selectedBar = state.bar!;
-        //   });      
-        // }
         if( state is BarMapObjectsLoading) {
           log("I'm Loading 😏");
         }
@@ -140,18 +135,20 @@ class _MapScreenState extends State<MapScreen> {
                 ]),
                 opacity: 1,
                 onTap: (mapObject, point) {
-                  log("${mapObject.mapId.value}");
-
-                  // if(selectedBar != null && selectedBar!.id == int.parse(mapObject.mapId.value)) {
-                  //   _draggableScrollableController
-                  //     .animateTo(
-                  //       BarDetailedSheet.maxChildSize,
-                  //       duration: const Duration(milliseconds: 100),
-                  //       curve: Curves.linear,
-                  //     );
-                  // } else {
-                  //   BlocProvider.of<RemoteBarsBloc>(context).add(GetBarByID(int.parse(mapObject.mapId.value)));
-                  // }
+                  final int mapObjectId = int.parse(mapObject.mapId.value);
+                  log("${mapObjectId}");
+                  if(mapObjectId == _selectedBarId) {
+                    _draggableScrollableController
+                      .animateTo(
+                        BarDetailedSheet.maxChildSize,
+                        duration: const Duration(milliseconds: 100),
+                        curve: Curves.linear,
+                      );
+                  } else {
+                    _selectedBarId = mapObjectId;
+                    BlocProvider.of<BarDetailedSheetBloc>(context)
+                      .add(UpdateBarDetailedSheet(barId: int.parse(mapObject.mapId.value)));
+                  }
                 }
               )
             )
@@ -185,21 +182,21 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
   
-  _bottomSheetAppBarExtension() {
+  _bottomSheetAppBarExpansion() {
     final double appBarHeight = MediaQuery.of(context).size.height - 
       (MediaQuery.of(context).viewPadding.top + kToolbarHeight);
     final double currentBottomSheetHeight = _draggableScrollableController.pixels;
 
     if(currentBottomSheetHeight >= appBarHeight) {
-      _setBottomSheetState(BarDetailedSheetState.expanded);
+      _setIsBottomSheetExpanded(true);
     } else {
-      _setBottomSheetState(BarDetailedSheetState.normal);
+      _setIsBottomSheetExpanded(false);
     }
   }
 
-  _setBottomSheetState(BarDetailedSheetState newState) {
-    if(newState != _bottomSheetState) {
-      setState(() => _bottomSheetState = newState);
+  _setIsBottomSheetExpanded(bool newState) {
+    if(newState != _isBottomSheetExpanded) {
+      setState(() => _isBottomSheetExpanded = newState);
     } 
   }
 
@@ -234,9 +231,4 @@ class _MapScreenState extends State<MapScreen> {
 
     return pngBytes!.buffer.asUint8List();
   }
-}
-
-enum BarDetailedSheetState {
-  expanded,
-  normal,
 }

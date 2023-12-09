@@ -9,4 +9,7 @@ sealed class BarMapObjectsEvent extends Equatable {
 
 class UpdateBarMapObjects extends BarMapObjectsEvent {
   const UpdateBarMapObjects();
+
+  @override
+  List<Object> get props => [];
 }
